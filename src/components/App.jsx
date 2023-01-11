@@ -5,6 +5,7 @@ import ContactForm from './ContactForm/ContactForm';
 import Wrapper from './Wrapper/Wrapper.styled';
 import { MainHeading, SecondaryHeading } from './Heading/Heading.styled';
 import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 import { deleteContacts, updateContacts } from 'redux/contacts/contactsSlice';
 import { updateFilter } from 'redux/filter/filterSlice';
 
@@ -39,7 +40,6 @@ export function App() {
 
   const handleChange = e => {
     const value = e.target.value;
-
     dispatch(updateFilter(value));
   };
 
