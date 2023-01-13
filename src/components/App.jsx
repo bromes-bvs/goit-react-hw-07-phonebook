@@ -1,18 +1,27 @@
-import { nanoid } from 'nanoid';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import Wrapper from './Wrapper/Wrapper.styled';
 import { MainHeading, SecondaryHeading } from './Heading/Heading.styled';
 import { useSelector, useDispatch } from 'react-redux';
-// import { useSelector, useDispatch } from 'react-redux';
-import { deleteContacts, updateContacts } from 'redux/contacts/contactsSlice';
-import { updateFilter } from 'redux/filter/filterSlice';
+import { updateFilter } from 'redux/contacts/filterSlice';
+import {
+  deleteOperation,
+  fetchOperation,
+  postOperation,
+} from 'redux/contacts/operations/contactsOperations';
+import { useEffect } from 'react';
 
 export function App() {
-  const contacts = useSelector(state => state.contacts.content);
+  const contacts = useSelector(state => state.contacts.items);
   const filter = useSelector(state => state.filter.filter);
+  // console.log(useSelector(state => state));
+  // console.log(contacts);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOperation());
+  }, [dispatch]);
 
   const handelSubmit = e => {
     e.preventDefault();
@@ -22,16 +31,15 @@ export function App() {
       contact.name.toLowerCase().includes(newName.toLowerCase())
     );
     const findeNumber = contacts.some(contact =>
-      contact.number.trim().includes(newNumber.trim())
+      contact.phone.trim().includes(newNumber.trim())
     );
 
     const newContact = {
-      id: nanoid(),
       name: newName,
-      number: newNumber,
+      phone: newNumber,
     };
     if (!findeName && !findeNumber) {
-      dispatch(updateContacts(newContact));
+      dispatch(postOperation(newContact));
       e.target.reset();
     } else {
       alert(`${newName} is already in contacts`);
@@ -43,8 +51,10 @@ export function App() {
     dispatch(updateFilter(value));
   };
 
-  const daleteContact = contactId => {
-    dispatch(deleteContacts(contactId));
+  const daleteContact = (contactId, event) => {
+    event.target.disabled = 'true';
+
+    dispatch(deleteOperation(contactId));
   };
 
   const normalizedFilter = filter.toLowerCase();
